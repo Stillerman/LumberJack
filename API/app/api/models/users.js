@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose'
 const bcrypt = require('bcrypt-nodejs');
 const saltRounds = 10;
 
@@ -29,4 +29,4 @@ this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds));
 next();
 });
 
-module.exports = mongoose.model('User', UserSchema);
+export var userModel = mongoose.model('User', UserSchema);
