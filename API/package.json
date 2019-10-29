@@ -19,6 +19,7 @@
     "@types/mongoose": "^5.5.26",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "1.18.2",
+    "cors": "^2.8.5",
     "express": "4.16.3",
     "jsonwebtoken": "8.2.1",
     "mongoose": "5.0.13",

@@ -5,10 +5,12 @@ const users = require('./routes/users');
 const bodyParser = require('body-parser');
 const mongoose = require('./config/database'); //database configuration
 var jwt = require('jsonwebtoken');
+var cors = require('cors')
+
 const app = express();
 
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
-
+app.use(cors())
 // connection to mongodb
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
 

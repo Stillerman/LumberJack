@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Button, Alert } from 'react-native';
 import Nav from './components/Nav'
+import axios from 'axios'
 
 class Greeting extends Component<{name: string}, {}> {
   render() {
@@ -26,3 +27,7 @@ export default class App extends Component {
     );
   }
 }
+
+axios.get('http://localhost:3000/').then((result) => {
+  console.log(result)
+})
