@@ -6,7 +6,7 @@ export default class Navigation extends Component<{}, {}> {
         return (
             <View style={styles.navbar}>
                 <Text style={styles.centeredText}>LumberJack</Text>
-                <Text style={styles.centeredText}>Beta v0.0.1</Text>
+                <Text style={styles.centeredText}>Beta v0.0.3</Text>
             </View>
         )
     }

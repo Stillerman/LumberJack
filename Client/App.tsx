@@ -1,77 +1,81 @@
-import React, { useState } from 'react';
-import { Text, StyleSheet, View, Button, Alert, TextInput, Picker } from 'react-native';
+import React, {useState} from 'react'
+import { View, Text, Button, Alert, TextInput, StyleSheet, Picker } from 'react-native'
 import Nav from './components/Nav'
 import axios from 'axios'
+import qs from 'querystring'
+import Logging from './components/Logging'
+
+
+
+type AppState = 'Authenticating' | 'Logging'
 
 export default function App() {
-  const [eventType, setEventType] = useState('eat')
+  const [appState, setAppState] = useState<AppState>('Authenticating')
+  const [appJWT, setJWT] = useState<string>(null)
+  const [email, setEmail] = useState<string>('')
+  const [pass, setPass] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
+  const [user, setUser] = useState(false)
+
+  function attemptLogin () {
+    setLoading(true)
+
+    let body = qs.stringify({
+      email: email,
+      password: pass
+    })
+    
+    let config = {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    }
+
+    axios.post('http://localhost:3000/users/login', body, config).then(resp => {
+
+      setLoading(false)
+
+      console.log(resp.data.message)
+      if (resp.data.status != "success") {
+        console.warn(resp.data.status)
+      } else {
+        setUser(resp.data.data.user)
+        setJWT(resp.data.data.token)
+        setAppState('Logging')
+      }
+    })
+  }
 
   return (
     <View>
       <Nav></Nav>
       <View style={styles.container}>
-        <Text style={styles.title}>Event Name</Text>
-        <Picker
-          selectedValue={eventType}
-          style={{ height: 50, width: 100 }}
-          onValueChange={(itemValue, itemIndex) =>
-            setEventType(itemValue)
-          }>
-            
-          {eventTypes.map(et => {
-            return <Picker.Item key={et.pastTense} label={et.pastTense} value={et.pastTense} />
-          })}
-        </Picker>
-        <EventEditor eventType={eventType}></EventEditor>
+        { appState == 'Authenticating' &&
+          <View>
+            <Text>Authenticating</Text>
+            <TextInput placeholder="Email" value={email} onChangeText={setEmail}></TextInput>
+            <TextInput placeholder="Password" value={pass} onChangeText={setPass}></TextInput>
+            <Button title="Login" onPress={attemptLogin}></Button>
+            { loading &&
+              <Text>Loading</Text>
+            }
+            <Text>User: {JSON.stringify(user)}</Text>
+            <Text>JWT: {JSON.stringify(appJWT)}</Text>
+          </View> 
+        }
+
+        { appState == "Logging" &&
+          <Logging></Logging>
+
+        }
       </View>
     </View>
   )
 }
 
-function EventEditor(props) {
-  return (
-    <View>
-      <Text>
-        {props.eventType} Editor
-      </Text>
-    </View>
-  )
-}
-
-interface Event {
-  presentTense: string,
-  pastTense: string,
-  fields: any,
-  createdBy: string,
-
-  ongoing?: boolean
-}
-
-const eventTypes : Event[] = [
-  {
-    presentTense: 'Eat',
-    pastTense: 'Ate',
-    createdBy: 'Jason Stillerman',
-    fields: {
-      food: 'string',
-      where: 'string'
-    }
-  },
-  {
-    presentTense: 'Sleep',
-    pastTense: 'Slept',
-    createdBy: 'Jason Stillerman',
-    fields: {
-      where: 'string'
-    },
-    ongoing: true
-  }
-]
-
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    justifyContent: 'center'
+    padding: 40
   },
   title: {
     fontSize: 30

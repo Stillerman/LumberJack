@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
-const bcrypt = require('bcrypt-nodejs');
-const saltRounds = 10;
+const bcrypt = require('bcrypt-nodejs')
+const saltRounds = 10
 
 
 //Define a schema
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema
 
 const UserSchema = new Schema({
 	name: {
@@ -25,8 +25,8 @@ const UserSchema = new Schema({
 });
 
 UserSchema.pre('save', function(next){
-this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds));
-next();
-});
+	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds))
+	next()
+})
 
-export var userModel = mongoose.model('User', UserSchema);
+export var userModel = mongoose.model('User', UserSchema)
