@@ -1,33 +1,79 @@
-import React, { Component } from 'react';
-import { Text, View, Button, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { Text, StyleSheet, View, Button, Alert, TextInput, Picker } from 'react-native';
 import Nav from './components/Nav'
 import axios from 'axios'
 
-class Greeting extends Component<{name: string}, {}> {
-  render() {
-    return (
-      <View style={{alignItems: 'center'}}>
-        <Text>Hello there, {this.props.name}!</Text><Button title="Press ME" onPress={() => Alert.alert('Hello,', this.props.name)}></Button>
+export default function App() {
+  const [eventType, setEventType] = useState('eat')
+
+  return (
+    <View>
+      <Nav></Nav>
+      <View style={styles.container}>
+        <Text style={styles.title}>Event Name</Text>
+        <Picker
+          selectedValue={eventType}
+          style={{ height: 50, width: 100 }}
+          onValueChange={(itemValue, itemIndex) =>
+            setEventType(itemValue)
+          }>
+            
+          {eventTypes.map(et => {
+            return <Picker.Item key={et.pastTense} label={et.pastTense} value={et.pastTense} />
+          })}
+        </Picker>
+        <EventEditor eventType={eventType}></EventEditor>
       </View>
-    );
-  }
+    </View>
+  )
 }
 
-export default class App extends Component {
-  render() {
-    return (
-      <View>
-        <Nav></Nav>
-        <View style={{alignItems: 'center', top: 50}}>
-          <Greeting name='Rexxar' />
-          <Greeting name='Jaina' />
-          <Greeting name='Valeera' />
-        </View>
-      </View>
-    );
-  }
+function EventEditor(props) {
+  return (
+    <View>
+      <Text>
+        {props.eventType} Editor
+      </Text>
+    </View>
+  )
 }
 
-axios.get('http://localhost:3000/').then((result) => {
-  console.log(result)
+interface Event {
+  presentTense: string,
+  pastTense: string,
+  fields: any,
+  createdBy: string,
+
+  ongoing?: boolean
+}
+
+const eventTypes : Event[] = [
+  {
+    presentTense: 'Eat',
+    pastTense: 'Ate',
+    createdBy: 'Jason Stillerman',
+    fields: {
+      food: 'string',
+      where: 'string'
+    }
+  },
+  {
+    presentTense: 'Sleep',
+    pastTense: 'Slept',
+    createdBy: 'Jason Stillerman',
+    fields: {
+      where: 'string'
+    },
+    ongoing: true
+  }
+]
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  title: {
+    fontSize: 30
+  }
 })

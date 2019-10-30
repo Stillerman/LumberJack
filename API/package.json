@@ -4,7 +4,7 @@
   "description": "Build REST API with nodejs, express, mongodb and jwt",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "./node_modules/.bin/parcel watch server.js -t node & ./node_modules/.bin/nodemon dist/server.js"
   },
   "keywords": [
     "Node",
@@ -24,6 +24,7 @@
     "jsonwebtoken": "8.2.1",
     "mongoose": "5.0.13",
     "morgan": "1.9.0",
+    "nodemon": "^1.19.4",
     "parcel-bundler": "^1.12.4"
   },
   "devDependencies": {
