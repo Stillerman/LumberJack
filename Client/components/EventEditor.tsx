@@ -51,8 +51,9 @@ export function EventEditor({ eventType, eventSubmitted }) {
 
 export function EventField({ fieldName, fieldData, onFieldChange }) {
    return (
-      <View style={{ paddingTop: 5 }}>
+      <View style={{ marginTop: 5, marginBottom: 25, padding: 10, borderWidth: 1, borderRadius: 25 }}>
          <Text style={{fontSize: 20}}>{fieldName}{fieldData.required ? ' *' : ''} ({fieldData.type})</Text>
+         <Text>{fieldData.description}</Text>
          <View style={{paddingLeft: 15}}>
             { fieldData.type === "string list" &&
                <View>
@@ -93,14 +94,14 @@ function NumberInput ({onUpdate}) {
    const [value, setValue] = useState(1)
 
    function attemptChangeText (newText) {
-      if (newText.length === 0) setValue(0)
-      else {
-         try {
-            let num = parseInt(newText)
-            setValue(num)
-         } catch (error) {
-            console.log('nope')
-         }
+      if (newText.length === 0) newText = '0'
+   
+      try {
+         let num = parseInt(newText)
+         setValue(num)
+         onUpdate(num)
+      } catch (error) {
+         console.log('nope')
       }
    }
 

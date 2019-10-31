@@ -60,7 +60,10 @@ export const eventTypes: IUserEvent[] = [
         required: false
       },
       quantity: {
-        type: 'string',
+        type: 'number',
+        description: 'a number 1 - 10 describing the quantity',
+        min: 1,
+        max: 10,
         required: false
       },
       method: {
