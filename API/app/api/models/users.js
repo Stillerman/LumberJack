@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Mongoose } from 'mongoose'
 const bcrypt = require('bcrypt-nodejs')
 const saltRounds = 10
 
@@ -21,8 +21,14 @@ const UserSchema = new Schema({
 		type: String,
 		trim: true,
 		required: true
-	}
-});
+	},
+	events: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: 'UserEvent'
+		}
+	]
+})
 
 UserSchema.pre('save', function(next){
 	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds))
