@@ -27,10 +27,16 @@
     "babel-preset-expo": "^7.0.0",
     "jest-expo": "^35.0.0",
     "jetifier": "^1.6.4",
+    "opentype.js": "^1.1.0",
     "typescript": "^3.4.5"
   },
   "jest": {
     "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts"
+    ]
   },
   "private": true
 }

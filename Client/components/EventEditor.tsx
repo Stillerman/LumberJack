@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { View, Text, Button, TextInput, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, Button, TextInput, TouchableOpacity, Picker } from 'react-native'
 import { IUserEvent, eventTypes } from '../EventTypes'
 import { TagInput } from './TagInput'
 
@@ -12,6 +12,8 @@ function eventHasName(eventName: string) {
 export function EventEditor({ eventType, eventSubmitted }) {
    let eventSchema = eventTypes.find(eventHasName(eventType))
    const [event, setEvent] = useState({})
+
+   useEffect(() => setEvent({}), [eventType])
 
    function submitEvent () {
       eventSubmitted({
@@ -65,8 +67,45 @@ export function EventField({ fieldName, fieldData, onFieldChange }) {
             { fieldData.type === "string" &&
                <TextInput placeholder={fieldData.type} style={{ margin: 5, borderBottomWidth: 1 }} onChangeText={onFieldChange}></TextInput>
             }
+
+            {fieldData.type === "options" &&
+               <Picker
+               style={{ height: 50, width: 100 }}
+               onValueChange={onFieldChange}>
+                  {
+                     fieldData.options.map(option => (
+                        <Picker.Item label={option} key={option}></Picker.Item>
+                     ))
+                  }
+               </Picker>
+            }
+
+            { fieldData.type === 'number' &&
+               <NumberInput onUpdate={onFieldChange}></NumberInput>
+            }
          </View>
       </View>
+   )
+}
+
+
+function NumberInput ({onUpdate}) {
+   const [value, setValue] = useState(1)
+
+   function attemptChangeText (newText) {
+      if (newText.length === 0) setValue(0)
+      else {
+         try {
+            let num = parseInt(newText)
+            setValue(num)
+         } catch (error) {
+            console.log('nope')
+         }
+      }
+   }
+
+   return (
+      <TextInput keyboardType='numeric' value={''+value} onChangeText={attemptChangeText}></TextInput>
    )
 }
 

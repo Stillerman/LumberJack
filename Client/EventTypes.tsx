@@ -8,7 +8,7 @@ export interface IUserEvent {
   ongoing?: boolean
 }
 
-export const eventTypes : IUserEvent[] = [
+export const eventTypes: IUserEvent[] = [
   {
     presentTense: 'Eat',
     pastTense: 'Ate',
@@ -25,6 +25,48 @@ export const eventTypes : IUserEvent[] = [
       when: {
         type: 'time',
         required: true  
+      }
+    }
+  },
+  {
+    presentTense: 'Drink',
+    pastTense: 'Drank',
+    createdBy: 'Admin',
+    fields: {
+      type: {
+        type: 'options',
+        options: ['Beer', 'Wine', 'Liquor', 'A Mixture'],
+        required: true
+      },
+      quantity: {
+        description: 'Number of standard sized drinks you consumed (one shot, one beer, one glass of wine)',
+        type: 'number',
+        required: true
+      },
+      brand: {
+        type: 'string',
+        description: 'What is the brand of the liquor',
+        required: false
+      }
+    }
+  },
+  {
+    presentTense: 'Smoke',
+    pastTense: 'Smoked',
+    createdBy: 'Jason Stillerman',
+    fields: {
+      strain: {
+        type: 'string',
+        required: false
+      },
+      quantity: {
+        type: 'string',
+        required: false
+      },
+      method: {
+        type: 'options',
+        options: ['Joint', 'Bong', 'Gravity Bong', 'Pen', 'Spliff', 'Bowl', 'Blunt'],
+        required: false
       }
     }
   },

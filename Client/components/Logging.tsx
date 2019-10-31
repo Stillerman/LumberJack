@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {View, Text, Picker, StyleSheet} from 'react-native'
 import { Bridge } from '../Bridge'
 
@@ -19,7 +19,8 @@ const Logging : React.SFC<{bridge: Bridge}> =  ({ bridge }) => {
         <Picker
           selectedValue={eventType}
           style={{ height: 50, width: 100 }}
-          onValueChange={(itemValue, itemIndex) =>
+          onValueChange={(itemValue) =>
+            
             setEventType(itemValue)
           }>
             
@@ -28,7 +29,6 @@ const Logging : React.SFC<{bridge: Bridge}> =  ({ bridge }) => {
           })}
 
         </Picker>
-
         <EventEditor eventType={eventType} eventSubmitted={sendEventToServer}></EventEditor>
 
       </View>

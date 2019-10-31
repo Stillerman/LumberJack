@@ -8,7 +8,9 @@ import { Bridge } from './Bridge'
 
 import Logging from './components/Logging'
 
-
+type User = {
+  name: string
+}
 
 type AppState = 'Authenticating' | 'Logging'
 
@@ -18,7 +20,7 @@ export default function App() {
   const [email, setEmail] = useState<string>('')
   const [pass, setPass] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState(false)
+  const [user, setUser] = useState<User>(undefined)
   const [bridge, setBridge] = useState<Bridge>(new Bridge())
 
   function attemptLogin () {
@@ -48,25 +50,21 @@ export default function App() {
 
   return (
     <View>
-      <Nav></Nav>
+      <Nav name={user ? user.name : "Guest"}></Nav>
       <View style={styles.container}>
         { appState == 'Authenticating' &&
           <View>
-            <Text>Authenticating</Text>
-            <TextInput placeholder="Email" value={email} onChangeText={setEmail}></TextInput>
-            <TextInput placeholder="Password" value={pass} onChangeText={setPass}></TextInput>
+            <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.pad}></TextInput>
+            <TextInput placeholder="Password" secureTextEntry={true} value={pass} onChangeText={setPass} style={styles.pad}></TextInput>
             <Button title="Login" onPress={attemptLogin}></Button>
             { loading &&
               <Text>Loading</Text>
             }
-            <Text>User: {JSON.stringify(user)}</Text>
-            <Text>JWT: {JSON.stringify(appJWT)}</Text>
           </View> 
         }
 
         { appState == "Logging" &&
           <Logging bridge={bridge}></Logging>
-
         }
       </View>
     </View>
@@ -79,5 +77,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30
+  },
+  pad: {
+    padding: 15,
+    margin: 5,
+    borderWidth: 1,
+    borderColor: '#a0a0a0',
+    borderRadius: 100
   }
 })
