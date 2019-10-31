@@ -9,8 +9,17 @@ function eventHasName(eventName: string) {
    }
 }
 
-export function EventEditor({ eventType }) {
+export function EventEditor({ eventType, eventSubmitted }) {
    let eventSchema = eventTypes.find(eventHasName(eventType))
+   const [event, setEvent] = useState({})
+
+   function submitEvent () {
+      eventSubmitted({
+         type: eventType,
+         fields: JSON.stringify(event)
+      })
+   }
+
 
    return (
       <View style={{ padding: 5, margin: 5 }}>
@@ -22,7 +31,10 @@ export function EventEditor({ eventType }) {
                Object.keys(eventSchema.fields).map(field => {
                   let fieldData = eventSchema.fields[field]
                   return (
-                     <EventField key={field} fieldName={field} fieldData={fieldData}></EventField>
+                     <EventField key={field} fieldName={field} fieldData={fieldData} onFieldChange={(newValue) => setEvent({
+                        ...event,
+                        [field]: newValue
+                     })}></EventField>
                   )
                })
             }
@@ -30,22 +42,19 @@ export function EventEditor({ eventType }) {
          <View style={{ padding: 10 }}>
             <Button onPress={submitEvent} title='Submit'></Button>
          </View>
+         <Text>{JSON.stringify(event)}</Text>
       </View>
    )
 }
 
-function submitEvent() {
-
-}
-
-export function EventField({ fieldName, fieldData }) {
+export function EventField({ fieldName, fieldData, onFieldChange }) {
    return (
       <View style={{ paddingTop: 5 }}>
          <Text style={{fontSize: 20}}>{fieldName}{fieldData.required ? ' *' : ''} ({fieldData.type})</Text>
          <View style={{paddingLeft: 15}}>
             { fieldData.type === "string list" &&
                <View>
-                  <TagInput></TagInput>
+                  <TagInput onTagsChanged={onFieldChange}></TagInput>
                </View>
             }
 
@@ -54,7 +63,7 @@ export function EventField({ fieldName, fieldData }) {
             }
 
             { fieldData.type === "string" &&
-               <TextInput placeholder={fieldData.type} style={{ margin: 5, borderBottomWidth: 1 }}></TextInput>
+               <TextInput placeholder={fieldData.type} style={{ margin: 5, borderBottomWidth: 1 }} onChangeText={onFieldChange}></TextInput>
             }
          </View>
       </View>

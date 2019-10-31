@@ -1,11 +1,18 @@
 import React, { useState } from 'react'
 import {View, Text, Picker, StyleSheet} from 'react-native'
+import { Bridge } from '../Bridge'
+
 
 import {eventTypes} from '../EventTypes'
 import {EventEditor} from './EventEditor'
 
-export default function Logging () {
+const Logging : React.SFC<{bridge: Bridge}> =  ({ bridge }) => {
     const [eventType, setEventType] = useState('eat')
+
+    function sendEventToServer (event) {
+      bridge.post('/userEvents', event)
+    }
+
     return (
         <View style={styles.container}>
         <Text style={styles.title}>I Just...</Text>
@@ -22,11 +29,13 @@ export default function Logging () {
 
         </Picker>
 
-        <EventEditor eventType={eventType}></EventEditor>
+        <EventEditor eventType={eventType} eventSubmitted={sendEventToServer}></EventEditor>
 
       </View>
     )
 }
+
+export default Logging
 
 const styles = StyleSheet.create({
     container: {

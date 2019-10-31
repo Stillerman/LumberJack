@@ -54,7 +54,7 @@ export function create (req, res, next) {
 
   let newUserEvent = req.body
   newUserEvent.createdBy = req.body.userId
-  
+  newUserEvent.fields = JSON.parse(newUserEvent.fields) || {}
   userEventsModel.create(newUserEvent, function (err, result) {
     if (err)
       next(err)

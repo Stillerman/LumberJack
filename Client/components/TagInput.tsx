@@ -11,13 +11,15 @@ function Chip ({text, onPress}) {
     )
  }
  
-export function TagInput () {
+export function TagInput ({onTagsChanged}) {
     const [listValue, setListValue] = useState([])
     const [textValue, setTextValue] = useState('')
  
     function textSubmitted () {
-       setListValue([...listValue, textValue])
+       let newList = [...listValue, textValue]
+       setListValue(newList)
        setTextValue('')
+       onTagsChanged(newList)
     }
  
     function chipClicked (el) {

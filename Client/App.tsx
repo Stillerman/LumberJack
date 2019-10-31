@@ -3,6 +3,9 @@ import { View, Text, Button, Alert, TextInput, StyleSheet, Picker } from 'react-
 import Nav from './components/Nav'
 import axios from 'axios'
 import qs from 'querystring'
+
+import { Bridge } from './Bridge'
+
 import Logging from './components/Logging'
 
 
@@ -16,22 +19,18 @@ export default function App() {
   const [pass, setPass] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
   const [user, setUser] = useState(false)
+  const [bridge, setBridge] = useState<Bridge>(new Bridge())
 
   function attemptLogin () {
     setLoading(true)
 
-    let body = qs.stringify({
+    let body = {
       email: email,
       password: pass
-    })
-    
-    let config = {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
     }
+    
 
-    axios.post('http://localhost:3000/users/login', body, config).then(resp => {
+    bridge.post('/users/login', body).then(resp => {
 
       setLoading(false)
 
@@ -41,6 +40,7 @@ export default function App() {
       } else {
         setUser(resp.data.data.user)
         setJWT(resp.data.data.token)
+        setBridge(new Bridge(resp.data.data.token))
         setAppState('Logging')
       }
     })
@@ -65,7 +65,7 @@ export default function App() {
         }
 
         { appState == "Logging" &&
-          <Logging></Logging>
+          <Logging bridge={bridge}></Logging>
 
         }
       </View>
