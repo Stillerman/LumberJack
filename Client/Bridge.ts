@@ -32,7 +32,7 @@ export class Bridge {
 
     if (this.authenticated) config.headers['x-access-token'] = this.jwt
 
-    return axios.get(url, config)
+    return axios.get('http://localhost:3000' + url, config)
   }
 
 }

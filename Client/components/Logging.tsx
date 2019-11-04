@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import {View, Text, Picker, StyleSheet} from 'react-native'
+import {View, Text, Picker, StyleSheet, Platform} from 'react-native'
 import { Bridge } from '../Bridge'
+
+import {isIos} from '../utils'
 
 
 import {eventTypes} from '../EventTypes'
@@ -10,15 +12,16 @@ const Logging : React.SFC<{bridge: Bridge}> =  ({ bridge }) => {
     const [eventType, setEventType] = useState('eat')
 
     function sendEventToServer (event) {
-      bridge.post('/userEvents', event)
+      return bridge.post('/userEvents', event)
     }
 
     return (
         <View style={styles.container}>
         <Text style={styles.title}>I Just...</Text>
+        
         <Picker
           selectedValue={eventType}
-          style={{ height: 50, width: 100 }}
+          style={{ height: isIos() ? 200 : 100, width: 100 }}
           onValueChange={(itemValue) =>
             
             setEventType(itemValue)

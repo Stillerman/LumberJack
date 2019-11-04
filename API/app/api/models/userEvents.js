@@ -5,13 +5,9 @@ const Schema = mongoose.Schema
 const UserEventSchema = new Schema({
   createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   type: String,
-  when: {
+  createdAt: {
     type: Date,
     default: Date.now
-  },
-  where: {
-    type: {},
-    required: false
   },
   fields: {}
 })

@@ -1,17 +1,17 @@
 import React, {useState} from 'react'
-import {TouchableOpacity, Text, TextInput, View} from 'react-native'
+import {TouchableOpacity, Text, TextInput, View, ScrollView} from 'react-native'
 
-function Chip ({text, onPress}) {
+function Chip ({textColor, color, text, onPress}) {
     return (
        <TouchableOpacity onPress={onPress}>
-          <View>
-             <Text style={{borderRadius: 100, backgroundColor: '#ddddff', padding:5, margin: 5}}>{text}</Text>
+          <View style={{borderRadius: 100, backgroundColor: color, padding:4, margin: 5, paddingHorizontal: 10}}>
+             <Text style={{color: textColor}}>{text}</Text>
           </View>
        </TouchableOpacity>
     )
  }
  
-export function TagInput ({onTagsChanged}) {
+export function TagInput ({onTagsChanged, suggestions}) {
     const [listValue, setListValue] = useState([])
     const [textValue, setTextValue] = useState('')
  
@@ -25,19 +25,38 @@ export function TagInput ({onTagsChanged}) {
     function chipClicked (el) {
        setListValue(listValue.filter(thing => thing !== el))
     }
+
+    function addSugg (sugg: string) {
+       console.log('tada', sugg)
+       let newList = [...listValue, sugg]
+       setListValue(newList)
+       onTagsChanged(newList)
+    }
  
+    function availableSuggestions () {
+      return suggestions.filter(s => !listValue.includes(s)).filter(s => s.toLowerCase().includes(textValue.toLowerCase()))
+    }
+
     return (
        <View>
-          <TextInput value={textValue} onChangeText={setTextValue} onSubmitEditing={textSubmitted}></TextInput>
           {listValue.length > 0 &&
              <View>
-                <Text>{'List so far: '}</Text>
                 <View style={{flexDirection: 'row'}}>
                 {
-                   listValue.map(el => <Chip onPress={() => chipClicked(el)} text={el} key={el}></Chip>)
+                   listValue.map(el => <Chip color="#ff9000" textColor="white" onPress={() => chipClicked(el)} text={el} key={el}></Chip>)
                 }
                 </View>
              </View>
+          }
+          <TextInput style={{borderRadius: 5, backgroundColor: '#f0f0f0', padding: 10}} value={textValue} onChangeText={setTextValue} onSubmitEditing={textSubmitted}></TextInput>
+          {
+            <View>
+             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+               {
+                  availableSuggestions().map(sugg => <Chip color="#f0f0f0" textColor="black" onPress={() => addSugg(sugg)} text={sugg} key={sugg}></Chip>)
+               }
+             </ScrollView>
+          </View>
           }
        </View>
     )

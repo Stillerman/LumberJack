@@ -1,88 +1,68 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { View, Text, Button, Alert, TextInput, StyleSheet, Picker } from 'react-native'
-import Nav from './components/Nav'
-import axios from 'axios'
-import qs from 'querystring'
-
+import { Header } from 'react-native-elements'
 import { Bridge } from './Bridge'
-
-import Logging from './components/Logging'
+import { Convienient } from './components/Convienient'
+import { Login } from './components/Login'
+import { Timeline } from './components/Timeline'
 
 type User = {
   name: string
 }
 
-type AppState = 'Authenticating' | 'Logging'
+
+type AppState = 'Logging' | 'Browsing'
 
 export default function App() {
-  const [appState, setAppState] = useState<AppState>('Authenticating')
-  const [appJWT, setJWT] = useState<string>(null)
-  const [email, setEmail] = useState<string>('')
-  const [pass, setPass] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState<User>(undefined)
+  // const [appState, setAppState] = useState<AppState>('Logging')
+  const [authenticated, setAuthenticated] = useState(false)
   const [bridge, setBridge] = useState<Bridge>(new Bridge())
+  const [user, setUser] = useState<User>(undefined)
+  const [appState, setAppState] = useState<AppState>('Logging')
+  const [recentId, setRecentId] = useState(undefined)
 
-  function attemptLogin () {
-    setLoading(true)
+  function handleAuthSuccess(data) {
+    setBridge(new Bridge(data.token))
+    setUser(data.user)
+    setAuthenticated(true)
+  }
 
-    let body = {
-      email: email,
-      password: pass
-    }
-    
-
-    bridge.post('/users/login', body).then(resp => {
-
-      setLoading(false)
-
-      console.log(resp.data.message)
-      if (resp.data.status != "success") {
-        console.warn(resp.data.status)
-      } else {
-        setUser(resp.data.data.user)
-        setJWT(resp.data.data.token)
-        setBridge(new Bridge(resp.data.data.token))
-        setAppState('Logging')
-      }
-    })
+  function viewInTimeline(id) {
+    setAppState('Browsing')
+    setRecentId(id)
   }
 
   return (
-    <View>
-      <Nav name={user ? user.name : "Guest"}></Nav>
-      <View style={styles.container}>
-        { appState == 'Authenticating' &&
-          <View>
-            <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.pad}></TextInput>
-            <TextInput placeholder="Password" secureTextEntry={true} value={pass} onChangeText={setPass} style={styles.pad}></TextInput>
-            <Button title="Login" onPress={attemptLogin}></Button>
-            { loading &&
-              <Text>Loading</Text>
-            }
-          </View> 
+    <View style={{ flex: 1 }}>
+      <View style={{ zIndex: 999 }}>
+        <Header backgroundColor={'#ff9000'}
+          //leftComponent={{ icon: 'menu', color: '#fff' }}
+          centerComponent={{ text: 'Lumberjack', style: { color: '#fff' } }}
+        // rightComponent={{ icon: 'person', color: '#fff' }}
+        />
+      </View>
+      <View style={{flex: 1}}>
+        {!authenticated &&
+          // <Login bridge={bridge} authSuccess={(data) => console.log(data)}></Login>
+          <Login bridge={bridge} authSucess={handleAuthSuccess} ></Login>
         }
 
-        { appState == "Logging" &&
-          <Logging bridge={bridge}></Logging>
+        {authenticated &&
+          <View>
+            {appState === 'Logging' &&
+              <Convienient bridge={bridge} viewInTimeline={viewInTimeline}></Convienient>
+            }
+            {appState === 'Browsing' &&
+              <Timeline bridge={bridge} itemOfInterest={recentId}></Timeline>
+            }
+          </View>
         }
+      </View>
+
+      <View style={{ backgroundColor: '#f0f0f0', flexDirection:'row', justifyContent:'space-evenly', paddingBottom: 25 }}>
+        <Button title="Logger" onPress={() => setAppState('Logging')}></Button>
+        <Button title="Timeline" onPress={() => setAppState('Browsing')}></Button>
       </View>
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 40
-  },
-  title: {
-    fontSize: 30
-  },
-  pad: {
-    padding: 15,
-    margin: 5,
-    borderWidth: 1,
-    borderColor: '#a0a0a0',
-    borderRadius: 100
-  }
-})

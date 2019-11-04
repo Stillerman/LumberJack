@@ -12,6 +12,12 @@
       "ios",
       "android",
       "web"
-    ]
+    ],
+    "ios": {
+      "bundleIdentifier": "com.jstiller.lumberjack"
+    },
+    "android": {
+      "package": "com.jstiller.lumberjack"
+    }
   }
 }

@@ -1,0 +1,1 @@
+export const sexyInput = {borderRadius: 5, backgroundColor: '#f0f0f0', padding: 10}

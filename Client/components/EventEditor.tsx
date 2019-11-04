@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { View, Text, Button, TextInput, TouchableOpacity, Picker } from 'react-native'
 import { IUserEvent, eventTypes } from '../EventTypes'
 import { TagInput } from './TagInput'
+import {sexyInput} from '../styles'
 
 function eventHasName(eventName: string) {
    return (event: IUserEvent) => {
@@ -12,13 +13,17 @@ function eventHasName(eventName: string) {
 export function EventEditor({ eventType, eventSubmitted }) {
    let eventSchema = eventTypes.find(eventHasName(eventType))
    const [event, setEvent] = useState({})
+   const [loading, setLoading] = useState(false)
 
    useEffect(() => setEvent({}), [eventType])
 
    function submitEvent () {
+      setLoading(true)
       eventSubmitted({
          type: eventType,
          fields: JSON.stringify(event)
+      }).then(() => {
+         setLoading(false)
       })
    }
 
@@ -44,15 +49,21 @@ export function EventEditor({ eventType, eventSubmitted }) {
          <View style={{ padding: 10 }}>
             <Button onPress={submitEvent} title='Submit'></Button>
          </View>
-         <Text>{JSON.stringify(event)}</Text>
+            { loading &&
+               <Text>Loading</Text>
+            }
       </View>
    )
 }
 
+function cap (word : string) {
+   return word[0].toUpperCase() + word.slice(1)
+}
+
 export function EventField({ fieldName, fieldData, onFieldChange }) {
    return (
-      <View style={{ marginTop: 5, marginBottom: 25, padding: 10, borderWidth: 1, borderRadius: 25 }}>
-         <Text style={{fontSize: 20}}>{fieldName}{fieldData.required ? ' *' : ''} ({fieldData.type})</Text>
+      <View style={{ marginTop: 5, marginBottom: 25, borderLeftWidth: 3 }}>
+         <Text style={{fontSize: 15}}>{cap(fieldName)}{fieldData.required ? ' *' : ''} ({fieldData.type})</Text>
          <Text>{fieldData.description}</Text>
          <View style={{paddingLeft: 15}}>
             { fieldData.type === "string list" &&
@@ -66,12 +77,12 @@ export function EventField({ fieldName, fieldData, onFieldChange }) {
             }
 
             { fieldData.type === "string" &&
-               <TextInput placeholder={fieldData.type} style={{ margin: 5, borderBottomWidth: 1 }} onChangeText={onFieldChange}></TextInput>
+               <TextInput placeholder={fieldData.type} style={sexyInput} onChangeText={onFieldChange}></TextInput>
             }
 
             {fieldData.type === "options" &&
                <Picker
-               style={{ height: 50, width: 100 }}
+               style={{width: 100 }}
                onValueChange={onFieldChange}>
                   {
                      fieldData.options.map(option => (
@@ -106,7 +117,7 @@ function NumberInput ({onUpdate}) {
    }
 
    return (
-      <TextInput keyboardType='numeric' value={''+value} onChangeText={attemptChangeText}></TextInput>
+      <TextInput style={{borderRadius: 5, backgroundColor: '#f0f0f0', padding: 10}} keyboardType='numeric' value={''+value} onChangeText={attemptChangeText}></TextInput>
    )
 }
 

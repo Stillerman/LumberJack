@@ -13,22 +13,15 @@ export function getById(req, res, next) {
   })
 }
 
-// export function getAll(req, res, next) {
-//   let UserEventList = []
-
-//   movieModel.find({}, function (err, movies) {
-//     if (err) {
-//       next(err)
-//     } else {
-//       for (let movie of movies) {
-//         moviesList.push({ id: movie._id, name: movie.name, released_on: movie.released_on })
-//       }
-//       res.json({ status: "success", message: "Movies list found!!!", data: { movies: moviesList } })
-
-//     }
-
-//   })
-// },
+export function getAll(req, res, next) {
+  userEventsModel.find({createdBy: req.body.userId}, function (err, userEvents) {
+    if (err) {
+      next(err)
+    } else {
+      res.json({ status: "success", message: "User events found!!!", data: userEvents })
+    }
+  })
+}
 
 export function updateById(req, res, next) {
   userEventsModel.findByIdAndUpdate(req.params.userEventId, req.body.userEvent, function (err, result) {
