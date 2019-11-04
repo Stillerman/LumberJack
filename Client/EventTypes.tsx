@@ -18,7 +18,8 @@ export interface IUserEvent {
   icon?: string,
   articulation?: string,
   ongoing?: boolean,
-  sentenceFragment?: string
+  sentenceFragment?: string,
+  paragraphTemplate?: string
 }
 
 function when (description?: string) : IField {
@@ -139,6 +140,7 @@ export const eventTypes: IUserEvent[] = [
     presentTense: 'shower',
     pastTense: 'showered',
     createdBy: 'Admin',
+    paragraphTemplate: 'You took a shower in {{where}} at {{when}}',
     icon: 'shower',
     fields: [
       when('When?'),
@@ -152,6 +154,7 @@ export const eventTypes: IUserEvent[] = [
     pastTense: 'Smoked',
     createdBy: 'Admin',
     sentenceFragment: 'smoked {{strain}}',
+    paragraphTemplate: 'A {{method}} was smoked at {{where}}. The strain was {{strain}}. Out of 10, the intensity of the session would be a {{quantity}}',
     fields: [
       {
         name: 'strain',
@@ -159,9 +162,9 @@ export const eventTypes: IUserEvent[] = [
         required: false
       },
       {
-        name: 'quantity',
+        name: 'intensity',
         type: 'number',
-        description: 'a number 1 - 10 describing the quantity',
+        description: 'a number 1 - 10 describing the intensity',
         min: 1,
         max: 10,
         required: false
@@ -193,6 +196,7 @@ export const eventTypes: IUserEvent[] = [
     pastTense: 'Thought',
     createdBy: 'Admin',
     sentenceFragment: 'had a thought',
+    paragraphTemplate: '{{note}}',
     icon: 'sticky-note',
     fields: [
       when(),

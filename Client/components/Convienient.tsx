@@ -67,11 +67,13 @@ let EventChooserSlice = ({ nextSlice, trickleDownProps, onTrigger }) => {
           })
         }
       </View>
-      <View style={{marginTop: 25}}>
-        <Button title='Next' onPress={() => {
-          onTrigger('addQuestionsFor', selectedEvent)
-          nextSlice({selectedEvent})
-        }}></Button>
+      <View style={{marginTop: 25, justifyContent: 'center', flexDirection: 'row'}}>
+        {
+          CircleButton('chevron-down', '#ff9000', '#fff', false, () => {
+            onTrigger('addQuestionsFor', selectedEvent)
+            nextSlice({selectedEvent})
+          })
+        }
       </View>
     </View>
   )
@@ -159,8 +161,10 @@ function createSliceForField (field: IField) {
                <NumberInput onUpdate={onFieldChange}></NumberInput>
             }
          </View>
-      <View style={{margin: 25}}>
-        <Button title='Next' onPress={() => nextSlice(stuffToTrickle)}></Button>
+      <View style={{margin: 25, justifyContent: 'center', flexDirection: 'row'}}>
+       {
+        CircleButton('chevron-down', '#ff9000', '#fff', false, () => nextSlice(stuffToTrickle))
+       }
       </View>
     </View>
     )

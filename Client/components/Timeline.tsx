@@ -42,28 +42,32 @@ function UserEvent({ data }) {
 
   function generateSentence () {
     let fragment = ''
-    
+
     if(eventSchema.sentenceFragment) fragment = Mustache.render(eventSchema.sentenceFragment, data.fields)
     else fragment = eventSchema.pastTense
 
-    return `I ${fragment} at ${time}`
+    return `You ${fragment}`
 
   }
 
   return (
     <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-      <View style={{ margin: 10, padding: 20, borderRadius: 10, backgroundColor: '#f0f0f0' }}>
-
+      <View style={{ margin: 10, padding: 15, borderRadius: 10, backgroundColor: '#f0f0f0' }}>
         <View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Icon name={eventSchema.icon} size={25}></Icon>
-            <Text style={{ fontSize: 20 }}>{generateSentence()}</Text>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex:1}}>
+            <Icon name={eventSchema.icon} style={{margin: 10}} size={25}></Icon>
+            <View style={{flexDirection: 'column', justifyContent: 'center', alignContent:'center', flex:1}}>
+              <Text style={{marginLeft: 5, fontSize: 20, flex:1 }}>{generateSentence()}</Text>
+            </View>
+            <Text>at {time}</Text>
           </View>
         </View>
         {expanded &&
           <View style={{ margin: 25 }}>
-            {
-              Object.keys(data.fields).map(key => <Text style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
+            { 
+              eventSchema.paragraphTemplate
+              ? <Text>{Mustache.render(eventSchema.paragraphTemplate, data.fields)}</Text>
+              : Object.keys(data.fields).map(key => <Text style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
             }
           </View>
         }
