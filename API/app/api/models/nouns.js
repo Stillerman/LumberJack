@@ -9,7 +9,7 @@ const NounSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  noun: string, // ie pizza
+  noun: String, // ie pizza
   fields: {} // ie {cal: 110}
 })
 
