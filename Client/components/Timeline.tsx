@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { getPrimaryNoun, getEventType } from '../EventTypes'
 import moment from 'moment'
 
+import he from 'he'
+
 import Mustache from 'mustache'
 
 export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({ bridge, itemOfInterest }) => {
@@ -69,7 +71,7 @@ function UserEvent({ data }) {
           <View style={{ margin: 25 }}>
             { 
               eventSchema.paragraphTemplate
-              ? <Text>{Mustache.render(eventSchema.paragraphTemplate, data.fields)}</Text>
+              ? <Text>{he.decode(Mustache.render(eventSchema.paragraphTemplate, data.fields))}</Text>
               : Object.keys(data.fields).map(key => <Text key={key} style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
             }
           </View>

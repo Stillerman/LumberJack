@@ -12,8 +12,7 @@ import { Bridge } from '../Bridge'
 
 import { MyDatePicker } from './Datepicker'
 
-import { Dropdown } from 'react-native-material-dropdown';
-import { ThemeConsumer } from 'react-native-elements'
+import { Dropdown } from 'react-native-material-dropdown'
 
 export const Convienient: React.FC<{ bridge: Bridge, viewInTimeline: (id: string) => void }> = ({ bridge, viewInTimeline }) => {
   const [questionSlices, setQuestionSlices] = useState([])
@@ -291,9 +290,9 @@ function NounListInput({ nounType, bridge, onFieldChange }) {
           }
           {suggestions().length === 0 &&
             <View>
-              <Text>Nothing Found</Text>
+              <Text>No {nounType}s found.</Text>
               { textVal.length > 0 &&
-                <Button title={`Create ${textVal} as new ${nounType}`} onPress={createNoun}></Button>
+                <Button type='clear' title={`Create ${textVal} as new ${nounType}`} onPress={createNoun}></Button>
               }
             </View> 
           }
@@ -354,7 +353,7 @@ function NounInput({nounType, onFieldChange, bridge}) {
           <View>
             <Text>No {nounType} found.</Text>
             { search.length > 0 &&
-              <Button title={`Create ${search} as new ${nounType}`} onPress={createNoun}></Button>
+              <Button type="clear" title={`Create ${search} as new ${nounType}`} onPress={createNoun}></Button>
             }
           </View>
         }

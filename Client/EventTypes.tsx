@@ -31,12 +31,12 @@ function when (description?: string) : IField {
   }
 }
 
-function where (description: string = 'Where?', locations: string[] = ['Simpson', 'Central Dining', 'Grundle', 'Dorm room', 'Gaku Ramen']) : IField {
+function where (description: string = 'Where?') : IField {
   return {
     name: 'where',
     description: description,
-    type: 'options',
-    options: locations,
+    type: 'noun',
+    nounType: 'location',
     required: false
   }
 }
@@ -82,6 +82,23 @@ export const eventTypes: IUserEvent[] = [
     ]
   },
   {
+    pastTense: 'Wore',
+    presentTense: 'Wear',
+    icon: 'tshirt',
+    createdBy: 'Admin',
+    sentenceFragment: 'wore {{clothes}}',
+    fields: [
+      {
+        name: 'clothes',
+        type: 'noun list',
+        nounType: 'clothing',
+        description: 'What did you wear today?'
+      },
+      where('Where did you get dressed'),
+      when('When did you get dressed?')
+    ]
+  },
+  {
     presentTense: 'Excersize',
     pastTense: 'Excersized',
     icon: 'dumbbell',
@@ -104,7 +121,7 @@ export const eventTypes: IUserEvent[] = [
         max: 10,
         required: true
       },
-      where('Where did you work out?', ['Patrick', 'CWP', 'CCRH', 'Around Campus']),
+      where('Where did you work out?'),
       when('When did the workout start?')
     ]
   },
@@ -134,7 +151,7 @@ export const eventTypes: IUserEvent[] = [
         description: 'What is the brand of the liquor?',
         required: false
       },
-      where('Where did you drink?', ['CCRH', 'Patterson', 'Wright', 'Outside']),
+      where('Where did you drink?'),
       when('When?')
 
     ]
@@ -147,7 +164,7 @@ export const eventTypes: IUserEvent[] = [
     icon: 'shower',
     fields: [
       when('When?'),
-      where('Where did you shower?', ['Wright', 'Patterson', 'CCRH'])
+      where('Where did you shower?')
     ],
     ongoing: true
   },
@@ -180,7 +197,7 @@ export const eventTypes: IUserEvent[] = [
         options: ['Joint', 'Bong', 'Gravity Bong', 'Pen', 'Spliff', 'Bowl', 'Blunt'],
         required: false
       },
-      where('Where did you smoke?', ['Dorm room', 'Henry\'s room', 'Golf Course']),
+      where('Where did you smoke?'),
       when('When did you smoke?')
     ]
   },
@@ -191,7 +208,7 @@ export const eventTypes: IUserEvent[] = [
     sentenceFragment: 'slept in {{where}}', //(I/You/John) ... at 6:12
     createdBy: 'Admin',
     fields: [
-      where('Where did you sleep?', ['My Dorm', 'CCRH']),
+      where('Where did you sleep?'),
       when('When did your sleep start?')
     ],
     ongoing: true
@@ -227,7 +244,7 @@ export const eventTypes: IUserEvent[] = [
         nounType: 'medication',
       },
       when('When did you take that?'),
-      where('Where?', ['Dorm room', 'Adelaide\'s room'])
+      where('Where?')
     ]
   },
   {
