@@ -3,6 +3,8 @@ import logger from 'morgan'
 import movies from './routes/movies'
 import users from './routes/users'
 import userEvents from './routes/userEvents'
+import nouns from './routes/nouns'
+
 import { urlencoded } from 'body-parser'
 import { connection } from './config/database' //database configuration
 import { verify } from 'jsonwebtoken'
@@ -28,6 +30,7 @@ app.use('/users', users)
 app.use('/movies', validateUser, movies)
 
 app.use('/userEvents', validateUser, userEvents)
+app.use('/nouns', validateUser, nouns)
 
 
 app.get('/favicon.ico', function(req, res) {
