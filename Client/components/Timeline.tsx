@@ -5,10 +5,12 @@ import Icon from 'react-native-vector-icons/FontAwesome5'
 import { getPrimaryNoun, getEventType } from '../EventTypes'
 import moment from 'moment'
 
+import Mustache from 'mustache'
+
 export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({ bridge, itemOfInterest }) => {
   const [userEvents, setUserEvents] = useState([])
 
-  function getUserEvents () {
+  function getUserEvents() {
     bridge.get('/userEvents').then(resp => {
       setUserEvents([...resp.data.data])
     })
@@ -19,41 +21,54 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
   }, [])
 
   return (
-    <View style={{padding: 10}}>
+    <View style={{ padding: 10 }}>
       <ScrollView>
-      <Text style={{fontSize: 25, margin: 10}}>Timeline</Text>
-      {
-        userEvents.map(ue => <UserEvent key={ue._id} data={ue} />)
-      }
+        <Text style={{ fontSize: 25, margin: 10 }}>Timeline</Text>
+        {
+          userEvents.map(ue => <UserEvent key={ue._id} data={ue} />)
+        }
       </ScrollView>
     </View>
 
   )
 }
 
-function UserEvent ({data}) {
+function UserEvent({ data }) {
   const [expanded, setExpanded] = useState(false)
 
   const eventSchema = getEventType(data.type)
+  const time = moment(data.fields.when).format('h:mm A')
 
+
+  function generateSentence () {
+    let fragment = ''
+    
+    if(eventSchema.sentenceFragment) fragment = Mustache.render(eventSchema.sentenceFragment, data.fields)
+    else fragment = eventSchema.pastTense
+
+    return `I ${fragment} at ${time}`
+
+  }
 
   return (
-    <View style={{margin: 10, padding: 20, borderRadius: 10, backgroundColor:'#f0f0f0'}}>
-      <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+    <TouchableOpacity onPress={() => setExpanded(!expanded)}>
+      <View style={{ margin: 10, padding: 20, borderRadius: 10, backgroundColor: '#f0f0f0' }}>
+
         <View>
-          <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Icon name={eventSchema.icon} size={25}></Icon>
-            <Text style={{fontSize: 20}}>I {eventSchema.pastTense.toLowerCase()} {getPrimaryNoun(data)} at {data.fields ? moment(data.fields.when).format('h:mm A') : ''}</Text>
+            <Text style={{ fontSize: 20 }}>{generateSentence()}</Text>
           </View>
         </View>
-        { expanded &&
-          <View style={{margin: 25}}>
+        {expanded &&
+          <View style={{ margin: 25 }}>
             {
-              Object.keys(data.fields).map(key => <Text style={{marginBottom: 15}}>{key} {JSON.stringify(data.fields[key])}</Text>)
+              Object.keys(data.fields).map(key => <Text style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
             }
           </View>
         }
-      </TouchableOpacity>
-    </View>
+
+      </View>
+    </TouchableOpacity>
   )
 }

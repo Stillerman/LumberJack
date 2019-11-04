@@ -1,6 +1,6 @@
 export interface IField {
   name: string,
-  type: 'string list' | 'string' | 'number' | 'location' | 'time' | 'options',
+  type: 'string list' | 'string' | 'number' | 'location' | 'time' | 'options' | 'text',
   options?: string[],
   description?: string,
   required?: boolean
@@ -18,6 +18,7 @@ export interface IUserEvent {
   icon?: string,
   articulation?: string,
   ongoing?: boolean,
+  sentenceFragment?: string
 }
 
 function when (description?: string) : IField {
@@ -55,7 +56,7 @@ export const getPrimaryNoun = (event) => {
   console.log(event, fieldName, event.fields[fieldName])
 
   if (Array.isArray(event.fields[fieldName])) return event.fields[fieldName].map(evt => evt.toLowerCase())
-  else return event.fields[fieldName].toLowerCase()
+  else return event.fields[fieldName] ? event.fields[fieldName].toLowerCase() : false
 }
 
 export const eventTypes: IUserEvent[] = [
@@ -82,6 +83,7 @@ export const eventTypes: IUserEvent[] = [
     pastTense: 'Excersized',
     icon: 'dumbbell',
     createdBy: 'Admin',
+    sentenceFragment: 'did a {{intensity}}-intensity workout',
     ongoing: true,
     fields: [
       {
@@ -104,33 +106,11 @@ export const eventTypes: IUserEvent[] = [
     ]
   },
   {
-    presentTense: 'Run',
-    icon: 'running',
-    pastTense: 'Ran',
-    createdBy: 'Admin',
-    fields: [
-      {
-        name: 'duration',
-        type: 'number',
-        description: 'Duration of the run in minutes',
-        required: true
-      },
-      {
-        name: 'intensity',
-        type: 'number',
-        min: 1,
-        max: 10,
-        description: 'The intensity of the run 1-10'
-      },
-      where('Where did you run?', ['Patrick', 'CWP', 'CCRH', 'Around Campus']),
-      when('When did the run start?')
-    ]
-  },
-  {
     presentTense: 'Drink',
     icon: 'glass-martini',
     pastTense: 'Drank',
     createdBy: 'Admin',
+    sentenceFragment: 'drank {{quantity}} {{brand}}',
     fields: [
       {
         name: 'type',
@@ -150,16 +130,28 @@ export const eventTypes: IUserEvent[] = [
         description: 'What is the brand of the liquor?',
         required: false
       },
-      where('Where did you drink?', ['CCRH', 'Patterson', 'Outside']),
+      where('Where did you drink?', ['CCRH', 'Patterson', 'Wright', 'Outside']),
       when('When?')
 
     ]
+  },
+  {
+    presentTense: 'shower',
+    pastTense: 'showered',
+    createdBy: 'Admin',
+    icon: 'shower',
+    fields: [
+      when('When?'),
+      where('Where did you shower?', ['Wright', 'Patterson', 'CCRH'])
+    ],
+    ongoing: true
   },
   {
     presentTense: 'Smoke',
     icon: 'cannabis',
     pastTense: 'Smoked',
     createdBy: 'Admin',
+    sentenceFragment: 'smoked {{strain}}',
     fields: [
       {
         name: 'strain',
@@ -188,11 +180,29 @@ export const eventTypes: IUserEvent[] = [
     presentTense: 'Sleep',
     icon: 'bed',
     pastTense: 'Slept',
+    sentenceFragment: 'slept in {{where}}', //(I/You/John) ... at 6:12
     createdBy: 'Admin',
     fields: [
       where('Where did you sleep?', ['My Dorm', 'CCRH']),
       when('When did your sleep start?')
     ],
     ongoing: true
+  },
+  {
+    presentTense: 'Thinking',
+    pastTense: 'Thought',
+    createdBy: 'Admin',
+    sentenceFragment: 'had a thought',
+    icon: 'sticky-note',
+    fields: [
+      when(),
+      {
+        name: 'note',
+        description: 'What\'s on your mind?',
+        type: 'text',
+        required: true
+      },
+      where()
+    ]
   }
 ]

@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from 'axios'
 import qs from 'qs'
 
+const BASE = 'http://34.94.109.123'
+
 export class Bridge {
   jwt: string
   authenticated = true
@@ -23,7 +25,7 @@ export class Bridge {
 
     if (this.authenticated) config.headers['x-access-token'] = this.jwt
 
-    return axios.post('http://localhost:3000' + url, body, config)
+    return axios.post(BASE + url, body, config)
   }
 
   get(url: string): Promise<AxiosResponse<any>> {
@@ -32,7 +34,7 @@ export class Bridge {
 
     if (this.authenticated) config.headers['x-access-token'] = this.jwt
 
-    return axios.get('http://localhost:3000' + url, config)
+    return axios.get(BASE + url, config)
   }
 
 }

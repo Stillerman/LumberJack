@@ -1,12 +1,26 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, Text } from 'react-native'
-import { Bridge } from '../Bridge'
+import * as SecureStore from 'expo-secure-store'
+
+const storeUserPass = async (userpass) => {
+  try {
+    await SecureStore.setItemAsync('userpass', userpass)
+  } catch (e) {
+    // saving error
+  }
+}
 
 export const Login = ({ bridge, authSucess }) => {
-  const [email, setEmail] = useState<string>('j@j.co')
-  const [pass, setPass] = useState<string>('tada')
+  const [email, setEmail] = useState<string>('')
+  const [pass, setPass] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState({})
+
+  SecureStore.getItemAsync('userpass').then(up => {
+    if(up.split('*:*').length === 2)
+    setEmail(up.split('*:*')[0])
+    setPass(up.split('*:*')[1])
+  })
 
 
   function attemptLogin() {
@@ -24,6 +38,7 @@ export const Login = ({ bridge, authSucess }) => {
         setError(resp.data)
         setLoading(false)
       } else {
+        storeUserPass(email+"*:*"+pass)
         authSucess(resp.data.data)
       }
     })

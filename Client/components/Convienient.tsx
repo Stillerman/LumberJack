@@ -123,6 +123,13 @@ function createSliceForField (field: IField) {
               </OnMount>
             }
 
+            { field.type === "text" &&
+              <OnMount cb={() => onFieldChange('')}>
+               <TextInput multiline numberOfLines={5} defaultValue={'\n\n\n\n\n'} placeholder={field.type} style={sexyInput} onChangeText={onFieldChange}></TextInput>
+              </OnMount>
+            }
+
+
             { field.type === "time" &&
               <MyDatePicker onDateChange={onFieldChange}></MyDatePicker>
             }
