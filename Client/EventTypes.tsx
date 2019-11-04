@@ -1,13 +1,13 @@
 export interface IField {
   name: string,
-  type: 'string list' | 'string' | 'number' | 'location' | 'time' | 'options' | 'text',
+  type: 'string list' | 'string' | 'number' | 'location' | 'time' | 'options' | 'text' | 'noun list' | 'noun',
   options?: string[],
   description?: string,
   required?: boolean
   min?: number,
   max?: number,
-  suggestions?: any[]
-
+  suggestions?: any[],
+  nounType?: string
 }
 
 export interface IUserEvent {
@@ -65,14 +65,16 @@ export const eventTypes: IUserEvent[] = [
     presentTense: 'Eat',
     icon: 'utensils',
     pastTense: 'Ate',
+    sentenceFragment: 'ate {{food}}',
+    paragraphTemplate: 'You ate {{food}} at {{where}} at {{when}}.',
     createdBy: 'Admin',
     // articulation: 'You ate {foods} at {when}',
     fields: [
       {
         name: 'food',
-        suggestions: ['Pizza', 'Grilled Cheeze', 'Captain Crunch', 'Tater Tots', 'French Fries', 'Onion Rings', 'Vitamin Water', 'Salad', 'Tofu'],
         description: 'What did you eat and drink?',
-        type: 'string list',
+        type: 'noun list',
+        nounType: 'food',
         required: true
       },
       where('Where did you eat?'),
@@ -89,9 +91,9 @@ export const eventTypes: IUserEvent[] = [
     fields: [
       {
         name: 'excersizes',
-        type: 'string list',
+        type: 'noun list',
         required: true,
-        suggestions: ['pushups', 'situps', 'running', 'curls', 'chinups'],
+        nounType: 'excersize',
         description: 'Which excersize(s) did you do?'
       },
       {
@@ -115,8 +117,9 @@ export const eventTypes: IUserEvent[] = [
     fields: [
       {
         name: 'type',
-        type: 'options',
-        options: ['Beer', 'Wine', 'Liquor', 'A Mixture'],
+        type: 'noun',
+        nounType: 'DrinkType',
+        // options: ['Beer', 'Wine', 'Liquor', 'A Mixture'],
         required: true
       },
       {
@@ -158,7 +161,9 @@ export const eventTypes: IUserEvent[] = [
     fields: [
       {
         name: 'strain',
-        type: 'string',
+        description: 'What strain was it?',
+        type: 'noun',
+        nounType: 'strain',
         required: false
       },
       {
@@ -206,6 +211,46 @@ export const eventTypes: IUserEvent[] = [
         type: 'text',
         required: true
       },
+      where()
+    ]
+  },
+  {
+    presentTense: 'Medicate',
+    pastTense: 'Medicated',
+    createdBy: 'Admin',
+    sentenceFragment: 'took {{medications}}',
+    icon: 'capsules',
+    fields: [
+      {
+        name: 'medications',
+        type: 'noun list',
+        nounType: 'medication',
+      },
+      when('When did you take that?'),
+      where('Where?', ['Dorm room', 'Adelaide\'s room'])
+    ]
+  },
+  {
+    pastTense: 'Drank (Caffiene)',
+    presentTense: 'Drink (Caffiene)',
+    createdBy: 'Admin',
+    sentenceFragment: 'had {{quantity}} cups of {{type}}',
+    icon: 'mug-hot',
+    fields: [
+      {
+        name: 'type',
+        type: 'options',
+        options: ['Coffee', 'Tea'],
+        description: 'What type of caffinated drink did you have?',
+      },
+      {
+        name: 'quantity',
+        type: 'number',
+        min: 1,
+        max: 10,
+        description: 'How many cups did you have?'
+      },
+      when(),
       where()
     ]
   }

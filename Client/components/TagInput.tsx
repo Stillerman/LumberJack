@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {TouchableOpacity, Text, TextInput, View, ScrollView} from 'react-native'
 
-function Chip ({textColor, color, text, onPress}) {
+export function Chip ({textColor, color, text, onPress}) {
     return (
        <TouchableOpacity onPress={onPress}>
           <View style={{borderRadius: 100, backgroundColor: color, padding:4, margin: 5, paddingHorizontal: 10}}>
@@ -34,7 +34,8 @@ export function TagInput ({onTagsChanged, suggestions}) {
     }
  
     function availableSuggestions () {
-      return suggestions.filter(s => !listValue.includes(s)).filter(s => s.toLowerCase().includes(textValue.toLowerCase()))
+       if (suggestions) return suggestions.filter(s => !listValue.includes(s)).filter(s => s.toLowerCase().includes(textValue.toLowerCase()))
+      else return []
     }
 
     return (
@@ -49,7 +50,7 @@ export function TagInput ({onTagsChanged, suggestions}) {
              </View>
           }
           <TextInput style={{borderRadius: 5, backgroundColor: '#f0f0f0', padding: 10}} value={textValue} onChangeText={setTextValue} onSubmitEditing={textSubmitted}></TextInput>
-          {
+          
             <View>
              <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                {
@@ -57,7 +58,7 @@ export function TagInput ({onTagsChanged, suggestions}) {
                }
              </ScrollView>
           </View>
-          }
+          
        </View>
     )
  }

@@ -13,6 +13,17 @@ export function getById(req, res, next) {
   })
 }
 
+export function getByType(req, res, next) {
+  console.log('GET BY TYPE', req.body, req.params)
+  nounsModel.find({type: req.params.nounType}, function (err, nounInfo) {
+    if (err) {
+      next(err)
+    } else {
+      res.json({ status: "success", message: "nouns Found", data: nounInfo })
+    }
+  })
+}
+
 export function getAll(req, res, next) {
   nounsModel.find({createdBy: req.body.userId}, function (err, nouns) {
     if (err) {
@@ -49,7 +60,7 @@ export function create (req, res, next) {
 
   newNoun.createdBy = req.body.userId
 
-  newNoun.fields = JSON.parse(newNoun.fields) || {}
+  if (newNoun.fields) newNoun.fields = JSON.parse(newNoun.fields) || {}
 
   nounsModel.create(newNoun, function (err, result) {
     if (err)

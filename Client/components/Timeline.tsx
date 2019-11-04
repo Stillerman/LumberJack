@@ -24,6 +24,9 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
     <View style={{ padding: 10 }}>
       <ScrollView>
         <Text style={{ fontSize: 25, margin: 10 }}>Timeline</Text>
+        { userEvents.length === 0 &&
+          <Text style={{fontSize: 20}}>You have no events yet.</Text>
+        }
         {
           userEvents.map(ue => <UserEvent key={ue._id} data={ue} />)
         }
@@ -67,7 +70,7 @@ function UserEvent({ data }) {
             { 
               eventSchema.paragraphTemplate
               ? <Text>{Mustache.render(eventSchema.paragraphTemplate, data.fields)}</Text>
-              : Object.keys(data.fields).map(key => <Text style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
+              : Object.keys(data.fields).map(key => <Text key={key} style={{ marginBottom: 15 }}>{key} {JSON.stringify(data.fields[key])}</Text>)
             }
           </View>
         }
