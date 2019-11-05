@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, TextInput, Button, Text } from 'react-native'
 import * as SecureStore from 'expo-secure-store'
+import { DismissKeyboard } from './DismissKeyboard'
 
 const storeUserPass = async (userpass) => {
   try {
@@ -16,19 +17,31 @@ export const Login = ({ bridge, authSucess }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState({})
 
+  useEffect(() => {
   SecureStore.getItemAsync('userpass').then(up => {
-    if(up.split('*:*').length === 2)
-    setEmail(up.split('*:*')[0])
-    setPass(up.split('*:*')[1])
+    if(up.split('*:*').length === 2) {
+      let mail = up.split('*:*')[0]
+      let password = up.split('*:*')[1]
+      setEmail(mail)
+      setPass(password)
+      attemptLogin(mail, password)
+    }
   })
+}, [])
 
 
-  function attemptLogin() {
+  function attemptLogin(em? : string , ps? : string) {
+    let theEmail = em || email
+    let thePass = ps || pass
+
+
+    
+    console.log('Attempting Login', theEmail, thePass)
     setLoading(true)
 
     let body = {
-      email: email,
-      password: pass
+      email: theEmail,
+      password: thePass
     }
 
 
@@ -38,13 +51,14 @@ export const Login = ({ bridge, authSucess }) => {
         setError(resp.data)
         setLoading(false)
       } else {
-        storeUserPass(email+"*:*"+pass)
+        storeUserPass(theEmail+"*:*"+thePass)
         authSucess(resp.data.data)
       }
     })
   }
 
   return (
+    <DismissKeyboard>
     <View style={{ padding: 40 }}>
       <View>
         <Text style={{ fontSize: 36, marginLeft: 50, marginTop: 50, marginBottom: 100, borderBottomWidth: 1, paddingBottom: 15 }}>Login</Text>
@@ -57,5 +71,6 @@ export const Login = ({ bridge, authSucess }) => {
         }
       </View>
     </View>
+    </DismissKeyboard>
   )
 }

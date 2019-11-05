@@ -68,7 +68,6 @@ export const eventTypes: IUserEvent[] = [
     sentenceFragment: 'ate {{food}}',
     paragraphTemplate: 'You ate {{food}} at {{where}} at {{when}}.',
     createdBy: 'Admin',
-    // articulation: 'You ate {foods} at {when}',
     fields: [
       {
         name: 'food',
@@ -77,9 +76,34 @@ export const eventTypes: IUserEvent[] = [
         nounType: 'food',
         required: true
       },
+      {
+        name: 'tags',
+        type: 'noun list',
+        description: 'Add some tags',
+        nounType: 'Meal Tag',
+        required: false
+      },
       where('Where did you eat?'),
       when('When did the meal start?')
     ]
+  },
+  {
+    presentTense: 'taking a dump',
+    pastTense: 'took a dump',
+    icon: 'poop',
+    createdBy: 'Admin',
+    fields: [
+      where('Where did you de the deed?'),
+      when('And when?'),
+      {
+        name: 'tags',
+        description: 'What was it like?',
+        required: false,
+        type: 'noun list',
+        nounType: 'Poop Tag'
+      }
+    ]
+
   },
   {
     pastTense: 'Wore',
@@ -126,6 +150,23 @@ export const eventTypes: IUserEvent[] = [
     ]
   },
   {
+    presentTense: 'Sex',
+    pastTense: 'Sex',
+    icon: 'hand-holding-heart',
+    createdBy: 'Admin',
+    sentenceFragment: 'had sex with {{who}}',
+    fields: [
+      when(),
+      where('Where did you do it?'),
+      {
+        name: 'who',
+        type: 'noun',
+        nounType: 'Person',
+        description: 'And with who?'
+      }
+    ]
+  },
+  {
     presentTense: 'Drink',
     icon: 'glass-martini',
     pastTense: 'Drank',
@@ -136,7 +177,6 @@ export const eventTypes: IUserEvent[] = [
         name: 'type',
         type: 'noun',
         nounType: 'DrinkType',
-        // options: ['Beer', 'Wine', 'Liquor', 'A Mixture'],
         required: true
       },
       {
@@ -147,7 +187,8 @@ export const eventTypes: IUserEvent[] = [
       },
       {
         name: 'brand',
-        type: 'string',
+        type: 'noun',
+        nounType: 'AlchoholBrand',
         description: 'What is the brand of the liquor?',
         required: false
       },

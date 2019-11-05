@@ -15,7 +15,7 @@ export function getById(req, res, next) {
 
 export function getByType(req, res, next) {
   console.log('GET BY TYPE', req.body, req.params)
-  nounsModel.find({type: req.params.nounType}, function (err, nounInfo) {
+  nounsModel.find({type: req.params.nounType, createdBy: req.body.userId}, function (err, nounInfo) {
     if (err) {
       next(err)
     } else {

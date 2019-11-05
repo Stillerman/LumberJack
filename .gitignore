@@ -4,3 +4,4 @@ API/.cache
 API/dist
 API/node_modules
 Client/.expo
+node_modules/

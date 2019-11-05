@@ -36,7 +36,11 @@ export default function App() {
   return (
     <View style={{ flex: 1 }}>
       <View style={{ zIndex: 999 }}>
-        <Header backgroundColor={'#ff9000'}
+        <Header linearGradientProps={{
+    colors: ['#FF9000', '#ffd000'],
+    start: { x: 0, y: 0.5 },
+    end: { x: 1, y: 0 },
+  }}
           //leftComponent={{ icon: 'menu', color: '#fff' }}
           centerComponent={{ text: 'Lumberjack', style: { fontSize: 20, color: '#fff' } }}
         // rightComponent={{ icon: 'person', color: '#fff' }}
@@ -60,9 +64,9 @@ export default function App() {
         }
       </View>
 
-      <View style={{ backgroundColor: '#f0f0f0', flexDirection:'row', justifyContent:'space-evenly', paddingBottom: 25, paddingTop: 10 }}>
-        {CircleButton('book', 'black', '#f0f0f0', false, () => setAppState('Logging'))}
-        {CircleButton('table', 'black', '#f0f0f0', false, () => setAppState('Browsing'))}
+      <View style={{ backgroundColor: '#f0f0f0', flexDirection:'row', justifyContent:'space-evenly', paddingBottom: 20, paddingTop: 10 }}>
+        {CircleButton('book', appState == 'Logging' ? '#ff9000' : 'black', '#f0f0f0', false, () => setAppState('Logging'))}
+        {CircleButton('table', appState == 'Browsing' ? '#ff9000' : 'black', '#f0f0f0', false, () => setAppState('Browsing'))}
       </View>
     </View>
   )

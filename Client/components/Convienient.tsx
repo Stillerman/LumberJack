@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { eventTypes, getEventType, IField } from '../EventTypes'
-import { View, Text, TextInput, Picker, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, Picker, ScrollView, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import { Button } from 'react-native-elements'
 import { sexyInput } from '../styles'
 import { prune } from '../utils'
+
+import IosFonts from './fontIos'
+
+import { DismissKeyboard } from './DismissKeyboard'
 
 import CircleButton from './CircleButton'
 import SliceNavigator from './SliceNavigator'
@@ -54,12 +58,12 @@ let EventChooserSlice = ({ nextSlice, trickleDownProps, onTrigger }) => {
 
   return (
     <View style={{ margin: 25 }}>
-      <Text style={{ textAlign: 'center', fontSize: 30, margin: 20, marginBottom: 35 }}>What Were You Up To?</Text>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <Text style={{ textAlign: 'center', fontSize: 30, margin: 20, marginBottom: 35, fontFamily: 'Gill Sans' }}>What were you up to?</Text>
+    {/* <IosFonts></IosFonts> */}
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         {
           eventTypes.filter((_, index) => index < 5).map(eventType => {
-            return <View key={eventType.presentTense}>
+            return <View style={{margin: 5}} key={eventType.presentTense}>
               {
                 CircleButton((eventType.icon || 'question'), '#000', undefined, selectedEvent === eventType.presentTense, () => {
                   setSelectedEvent(eventType.presentTense)
@@ -69,11 +73,23 @@ let EventChooserSlice = ({ nextSlice, trickleDownProps, onTrigger }) => {
           })
         }
       </View>
-
-      <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
         {
-          eventTypes.filter((_, index) => index >= 5).map(eventType => {
-            return <View key={eventType.presentTense}>
+          eventTypes.filter((_, index) => (index >= 5 && index < 9)).map(eventType => {
+            return <View style={{margin: 5}} key={eventType.presentTense}>
+              {
+                CircleButton((eventType.icon || 'question'), '#000', undefined, selectedEvent === eventType.presentTense, () => {
+                  setSelectedEvent(eventType.presentTense)
+                })
+              }
+            </View>
+          })
+        }
+      </View>
+      <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'center' }}>
+        {
+          eventTypes.filter((_, index) => index >= 9).map(eventType => {
+            return <View style={{margin: 5}} key={eventType.presentTense}>
               {
                 CircleButton((eventType.icon || 'question'), '#000', undefined, selectedEvent === eventType.presentTense, () => {
                   setSelectedEvent(eventType.presentTense)
@@ -121,7 +137,8 @@ function createSliceForField(field: IField, bridge: Bridge) {
     }
 
     return (
-      <View>
+        <DismissKeyboard>
+        <View>
         <Text style={{ textAlign: 'center', fontSize: 30, margin: 20, marginBottom: 15 }}>{field.description ? field.description : field.name}</Text>
         <View style={{ padding: 25 }}>
           {field.type === "string list" &&
@@ -137,7 +154,7 @@ function createSliceForField(field: IField, bridge: Bridge) {
           }
 
           {field.type === 'noun' &&
-            <View>
+            <View style={{maxHeight: 150}}>
               <NounInput nounType={field.nounType} bridge={bridge} onFieldChange={onFieldChange}></NounInput>
             </View>
           }
@@ -190,12 +207,13 @@ function createSliceForField(field: IField, bridge: Bridge) {
             <NumberInput onUpdate={onFieldChange}></NumberInput>
           }
         </View>
-        <View style={{ margin: 25, justifyContent: 'center', flexDirection: 'row' }}>
+        <View style={{ margin: 10, justifyContent: 'center', flexDirection: 'row' }}>
           {
             CircleButton('chevron-down', '#ff9000', '#fff', false, () => nextSlice(stuffToTrickle))
           }
         </View>
       </View>
+      </DismissKeyboard>
     )
   }
 }
@@ -274,7 +292,9 @@ function NounListInput({ nounType, bridge, onFieldChange }) {
   useEffect(() => populateNounBank(), [])
 
   return (
-    <View>
+    
+
+  <View>
       <View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {
@@ -282,7 +302,9 @@ function NounListInput({ nounType, bridge, onFieldChange }) {
           }
         </ScrollView>
       </View>
-      <TextInput style={sexyInput} value={textVal} onChangeText={setTextVal}></TextInput>
+      
+        <TextInput style={sexyInput} value={textVal} onChangeText={setTextVal}></TextInput>
+      
       <View>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {suggestions().length > 0 &&
@@ -299,7 +321,7 @@ function NounListInput({ nounType, bridge, onFieldChange }) {
         </ScrollView>
       </View>
       {/* <TagInput suggestions={nounBank} onTagsChanged={onFieldChange}></TagInput> */}
-    </View>
+      </View>
   )
 }
 
@@ -337,7 +359,7 @@ function NounInput({nounType, onFieldChange, bridge}) {
   }
   
   return (
-    <View>
+    <View style={{maxHeight: 150}}>
       <Text style={{fontSize: 20}}>{selectedNoun}</Text>
       <TextInput placeholder={`Search ${nounType}s`} value={search} onChangeText={setSearch} style={{...sexyInput, margin: 5}}></TextInput>
       

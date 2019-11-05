@@ -3,14 +3,20 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { Bridge } from '../Bridge'
 import Icon from 'react-native-vector-icons/FontAwesome5'
 import { getPrimaryNoun, getEventType } from '../EventTypes'
-import moment from 'moment'
+import moment, { Moment } from 'moment'
 
 import he from 'he'
 
 import Mustache from 'mustache'
 
+function momentToDate (mom: Moment) {
+  return mom.year() + '/' + mom.dayOfYear()
+}
+
 export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({ bridge, itemOfInterest }) => {
   const [userEvents, setUserEvents] = useState([])
+
+  const todaysDate = momentToDate(moment(Date.now()))
 
   function getUserEvents() {
     bridge.get('/userEvents').then(resp => {
@@ -22,6 +28,10 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
     getUserEvents()
   }, [])
 
+  function visibleUserEvents () {
+    return userEvents.filter(e => momentToDate(moment(e.fields.when)) === todaysDate)
+  }
+
   return (
     <View style={{ padding: 10 }}>
       <ScrollView>
@@ -30,7 +40,7 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
           <Text style={{fontSize: 20}}>You have no events yet.</Text>
         }
         {
-          userEvents.map(ue => <UserEvent key={ue._id} data={ue} />)
+          visibleUserEvents().map(ue => <UserEvent key={ue._id} data={ue} />)
         }
       </ScrollView>
     </View>
@@ -48,11 +58,27 @@ function UserEvent({ data }) {
   function generateSentence () {
     let fragment = ''
 
-    if(eventSchema.sentenceFragment) fragment = Mustache.render(eventSchema.sentenceFragment, data.fields)
+    if(eventSchema.sentenceFragment) fragment = Mustache.render(eventSchema.sentenceFragment, prepareFields(data.fields))
     else fragment = eventSchema.pastTense
 
     return `You ${fragment}`
 
+  }
+
+  function prepareFields (fields) {
+    let temp = {...fields}
+
+    Object.keys(temp).forEach(key => {
+      if (Array.isArray(temp[key])) temp[key] = makeReadableList(temp[key])
+    })
+
+    return temp
+  }
+  
+  function makeReadableList (array) {
+    let temp = [...array]
+    temp[temp.length - 1] = 'and ' + temp.slice(-1)[0]
+    return temp.join(', ')
   }
 
   return (
