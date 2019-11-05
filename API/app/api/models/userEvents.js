@@ -5,6 +5,7 @@ const Schema = mongoose.Schema
 const UserEventSchema = new Schema({
   createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   type: String,
+  ongoing: Boolean,
   createdAt: {
     type: Date,
     default: Date.now
