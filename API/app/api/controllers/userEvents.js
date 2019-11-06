@@ -1,5 +1,5 @@
 import { userEventsModel } from '../models/userEvents'
-
+import moment from 'moment'
 
 
 export function getById(req, res, next) {
@@ -30,6 +30,13 @@ export function updateById(req, res, next) {
     else {
       res.json({ status: "success", message: "UserEvent updated successfully!!!", data: result })
     }
+  })
+}
+
+export function stopOnGoingEvent(req, res, next) {
+  userEventsModel.findByIdAndUpdate(req.params.userEventId, {ongoing: false, 'fields.endTime': moment().format()}, (err, result) => {
+    if (err) next(err)
+    else res.json({status: 'success', message: 'UserEventEnded', data:result})
   })
 }
 
