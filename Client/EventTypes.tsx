@@ -198,6 +198,30 @@ export const eventTypes: IUserEvent[] = [
     ]
   },
   {
+    pastTense: 'worked on',
+    presentTense: 'work on',
+    createdBy: 'Admin',
+    ongoing: true,
+    icon: 'business-time',
+    sentenceFragment: 'worked on {{task}}',
+    fields: [
+      {
+        name: 'task',
+        type: 'noun',
+        nounType: 'task',
+        description: 'What task did you work on?'
+      },
+      {
+        name: 'tags',
+        type: 'noun list',
+        nounType: 'work tag',
+        description: 'What type of work was it?'
+      },
+      where('Where did you work?'),
+      when('When did you start?')
+    ]
+  },
+  {
     presentTense: 'shower',
     pastTense: 'showered',
     createdBy: 'Admin',
@@ -297,8 +321,8 @@ export const eventTypes: IUserEvent[] = [
     fields: [
       {
         name: 'type',
-        type: 'options',
-        options: ['Coffee', 'Tea'],
+        type: 'noun',
+        nounType: 'caffinated drink',
         description: 'What type of caffinated drink did you have?',
       },
       {

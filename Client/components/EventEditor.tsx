@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Button, TextInput, TouchableOpacity, Picker } from 'react-native'
+import { View, Text, Button, TextInput, Picker } from 'react-native'
 import { IUserEvent, eventTypes } from '../EventTypes'
-import { TagInput } from './TagInput'
+import { TagInput } from './Convienient/TagInput'
 import {sexyInput} from '../styles'
 
 function eventHasName(eventName: string) {
@@ -68,7 +68,7 @@ export function EventField({ fieldName, fieldData, onFieldChange }) {
          <View style={{paddingLeft: 15}}>
             { fieldData.type === "string list" &&
                <View>
-                  <TagInput onTagsChanged={onFieldChange}></TagInput>
+                  <TagInput suggestions={[]} onTagsChanged={onFieldChange}></TagInput>
                </View>
             }
 

@@ -1,16 +1,8 @@
 import React, {useState} from 'react'
-import {TouchableOpacity, Text, TextInput, View, ScrollView} from 'react-native'
+import {TextInput, View, ScrollView} from 'react-native'
+import {Chip} from './Chip'
 
-export function Chip ({textColor, color, text, onPress}) {
-    return (
-       <TouchableOpacity onPress={onPress}>
-          <View style={{borderRadius: 100, backgroundColor: color, padding:4, margin: 5, paddingHorizontal: 10}}>
-             <Text style={{color: textColor}}>{text}</Text>
-          </View>
-       </TouchableOpacity>
-    )
- }
- 
+
 export function TagInput ({onTagsChanged, suggestions}) {
     const [listValue, setListValue] = useState([])
     const [textValue, setTextValue] = useState('')

@@ -65,7 +65,7 @@ export const Login = ({ bridge, authSucess }) => {
 
         <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={{ padding: 10 }}></TextInput>
         <TextInput placeholder="Password" secureTextEntry={true} value={pass} onChangeText={setPass} style={{ padding: 10 }}></TextInput>
-        <Button title="Login" onPress={attemptLogin}></Button>
+        <Button title="Login" onPress={() => attemptLogin()}></Button>
         {loading &&
           <Text>Loading</Text>
         }
