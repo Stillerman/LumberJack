@@ -4,6 +4,7 @@ import movies from './routes/movies'
 import users from './routes/users'
 import userEvents from './routes/userEvents'
 import nouns from './routes/nouns'
+import eventTypes from './routes/eventTypes'
 
 import { urlencoded } from 'body-parser'
 import { connection } from './config/database' //database configuration
@@ -21,7 +22,7 @@ app.use(logger('dev'))
 app.use(urlencoded({extended: false}))
 
 app.get('/', function(req, res){
-res.json({"tutorial" : "Build REST API with node.js"})
+res.send('Lumberjack API Server')
 })
 
 
@@ -31,6 +32,7 @@ app.use('/movies', validateUser, movies)
 
 app.use('/userEvents', validateUser, userEvents)
 app.use('/nouns', validateUser, nouns)
+app.use('/eventTypes', validateUser, eventTypes)
 
 
 app.get('/favicon.ico', function(req, res) {

@@ -31,3 +31,11 @@ Press `W` to start project in web browser
     - number
     - options
         - strings
+
+## Technologies
+- React Native
+- Typescript
+- Express JS
+- Mongo DB
+- Parcel Bundler
+- Flutter

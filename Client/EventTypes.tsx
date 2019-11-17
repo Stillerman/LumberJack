@@ -51,7 +51,6 @@ export const getPrimaryNoun = (event) => {
   if (!event.fields) return false
 
   let evtType = getEventType(event.type)
-
   let fieldName = evtType.fields[0].name
 
   console.log(event, fieldName, event.fields[fieldName])
@@ -194,7 +193,28 @@ export const eventTypes: IUserEvent[] = [
       },
       where('Where did you drink?'),
       when('When?')
-
+    ]
+  },
+  {
+    icon: 'heartbeat',
+    pastTense: 'lung pain',
+    presentTense: 'lung pain',
+    createdBy: 'Admin',
+    sentenceFragment: 'experienced the lung pain',
+    fields: [
+      {
+        name: 'intensity',
+        type: 'number',
+        min: 1,
+        max: 10,
+        description: 'How intense was the lung pain?'
+      },
+      {
+        name: 'notes',
+        type: 'text'
+      },
+      when(),
+      where()
     ]
   },
   {

@@ -27,6 +27,12 @@ const UserSchema = new Schema({
 			type: Schema.Types.ObjectId,
 			ref: 'UserEvent'
 		}
+	],
+	friends: [
+		{
+			type: Schema.Types.ObjectId,
+			red: 'User'
+		}
 	]
 })
 

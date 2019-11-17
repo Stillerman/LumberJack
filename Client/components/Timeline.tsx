@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native'
 import { Bridge } from '../Bridge'
 import { Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/FontAwesome5'
-import { getPrimaryNoun, getEventType } from '../EventTypes'
+import { getEventType } from '../EventTypes'
 import { Overlay } from 'react-native-elements'
 import moment, { Moment } from 'moment'
 
@@ -19,7 +19,10 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
   const [userEvents, setUserEvents] = useState([])
   const [editing, setEditing] = useState(false)
   const [editingData, setEditingData] = useState({})
+  const [dayOffset, setDayOffset] = useState(0)
+
   const todaysDate = momentToDate(moment(Date.now()))
+
 
   function getUserEvents() {
     bridge.get('/userEvents').then(resp => {
@@ -33,8 +36,16 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
     getUserEvents()
   }, [])
 
+  function currentDate () {
+    return moment().subtract(dayOffset, 'days')
+  }
+
+  function viewingDate () {
+    return momentToDate(currentDate())
+  }
+
   function visibleUserEvents() {
-    return userEvents.filter(e => momentToDate(moment(e.fields.when)) === todaysDate)
+    return userEvents.filter(e => momentToDate(moment(e.fields.when)) === viewingDate())
   }
 
   return (
@@ -42,10 +53,18 @@ export const Timeline: React.FC<{ bridge: Bridge, itemOfInterest: string }> = ({
       <Overlay isVisible={editing}>
         <EventEditor bridge={bridge} data={editingData} close={() => setEditing(false)}></EventEditor>
       </Overlay>
+
+      <Text style={{ fontSize: 25, margin: 10 }}>Timeline</Text>
+      <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <Button type="clear"  icon={{name: "chevron-left", size: 25 }} onPress={() => setDayOffset(dayOffset+1)}></Button>
+        <Text style={{paddingTop: 12}}>{currentDate().format('dddd, MMM Do')}</Text>
+        <Button type="clear" icon={{name: "chevron-right", size: 25 }} onPress={() => setDayOffset(dayOffset-1)}></Button>
+      </View>
+      </View>
       <ScrollView>
-        <Text style={{ fontSize: 25, margin: 10 }}>Timeline</Text>
-        {userEvents.length === 0 &&
-          <Text style={{ fontSize: 20 }}>You have no events yet.</Text>
+        {visibleUserEvents().length === 0 &&
+          <Text style={{ fontSize: 20 }}>You have no events for this day.</Text>
         }
         {
           visibleUserEvents().map(ue => <UserEvent bridge={bridge} triggerRefresh={getUserEvents} triggerEventEditor={eventData => {setEditing(true); setEditingData(eventData)}} key={ue._id} data={ue} />)

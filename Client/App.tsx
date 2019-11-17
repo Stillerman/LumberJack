@@ -8,6 +8,15 @@ import { Timeline } from './components/Timeline'
 import CircleButton from './components/CircleButton'
 import {Profile} from './components/Profile'
 
+import {eventTypes} from './EventTypes'
+
+// console.log(JSON.stringify(eventTypes.map(et => {
+//   return {
+//     ...et,
+//     fields: JSON.stringify(et.fields)
+//   }
+// })))
+
 type User = {
   name: string
 }
