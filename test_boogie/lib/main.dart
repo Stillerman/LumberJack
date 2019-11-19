@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:test_boogie/FlutterJack.dart';
 import 'package:test_boogie/Login.dart';
 
@@ -10,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FlutterJack',
+      title: 'FluttaJack',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
@@ -82,9 +83,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
+      appBar: GradientAppBar(
+    title: Text('Flutter'),
+    gradient: LinearGradient(colors: [Colors.orange[300], Colors.orange[700]])
+  ),
       body: Center(
         child: mainContent()
       ),
