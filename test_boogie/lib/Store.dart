@@ -42,7 +42,7 @@ class Store with ChangeNotifier {
   List<EventType> _eventTypes = [];
   List<UserEvent> _userEvents = [];
   EventType _selectedEventType;
-  dynamic _currentEventData = {};
+  Map<String, String> _currentEventData = {};
 
   List<EventType> get eventTypes => _eventTypes;
   List<UserEvent> get userEvents => _userEvents;
@@ -64,8 +64,8 @@ class Store with ChangeNotifier {
     notifyListeners();
   }
 
-  set currentEventData(dynamic newCED) {
-    _selectedEventType = newCED;
+  set currentEventData(Map<String, String> newCED) {
+    _currentEventData = newCED;
     notifyListeners();
   }
 }

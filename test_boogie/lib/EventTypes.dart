@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:test_boogie/DatePicker.dart';
 
 import 'Icons.dart';
 import 'Nouns.dart';
@@ -66,6 +67,7 @@ class EventTypeField {
     fieldType = getFieldTypeFromString(fieldData['type']);
     name = fieldData['name'];
     description = fieldData['description'] ?? name + ' field';
+    nounType = fieldData['nounType'] ?? null;
   }
 
   Widget toQuestionWidget(Null Function(Map<String, String> response) cb) {
@@ -81,8 +83,18 @@ class EventTypeField {
           );
           break;
         case FieldType.nounList:
-          return NounListSelector(nounType, (val) {
+          print('Creating noun dictionary provider for nounType $nounType');
+          return NounDictionaryProvider(nounType, NounListSelector((val) {
             cb({name: val.toString()});
+          }));
+        case FieldType.noun:
+          print('Creating noun dictionary provider for nounType $nounType');
+          return NounDictionaryProvider(nounType, NounSelector((val) {
+            cb({name: val.toString()});
+          }));
+        case FieldType.time:
+          return CustomDatePicker((DateTime newDate) {
+            cb({name: newDate.toIso8601String()});
           });
         default:
           return Text('Not yet implemented');
