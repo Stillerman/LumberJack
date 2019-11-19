@@ -1,20 +1,18 @@
 import 'dart:convert';
-
-import 'package:flutter/material.dart';
-import 'package:property_change_notifier/property_change_notifier.dart';
+import 'package:flutter/widgets.dart';
 import 'package:test_boogie/Bridge.dart';
 import 'package:test_boogie/EventTypes.dart';
 
 import 'UserEvent.dart';
 
-class Store extends PropertyChangeNotifier<String> {
-  Bridge bridge;
+class Store with ChangeNotifier {
+  Bridge _bridge;
 
-  Store(this.bridge) {
+  Store(this._bridge) {
     fetch();
   }
 
-  void fetch () async {
+  void fetch() async {
     await fetchEventTypes();
     await fetchUserEvents();
   }
@@ -32,25 +30,42 @@ class Store extends PropertyChangeNotifier<String> {
   Future fetchUserEvents() async {
     var response = await bridge.httpGet('/userEvents');
 
-    userEvents = (json.decode(response.body)['data'] as List<dynamic>).
-    map((ue) => UserEvent.withMetadata(ue, eventTypes)).toList();
+    userEvents = (json.decode(response.body)['data'] as List<dynamic>)
+        .map((ue) => UserEvent.withMetadata(ue, eventTypes))
+        .toList()
+          ..sort((et1, et2) =>
+              et2.when.compareTo(et1.when)); // sorts events recent first
 
     return userEvents;
   }
 
   List<EventType> _eventTypes = [];
   List<UserEvent> _userEvents = [];
+  EventType _selectedEventType;
+  dynamic _currentEventData = {};
 
   List<EventType> get eventTypes => _eventTypes;
   List<UserEvent> get userEvents => _userEvents;
-
+  EventType get selectedEventType => _selectedEventType;
+  dynamic get currentEventData => _currentEventData;
+  Bridge get bridge => _bridge;
   set eventTypes(List<EventType> ets) {
     _eventTypes = ets;
-    notifyListeners('eventTypes');
+    notifyListeners();
   }
 
   set userEvents(List<UserEvent> usrEvts) {
     _userEvents = usrEvts;
-    notifyListeners('userEvents');
+    notifyListeners();
+  }
+
+  set selectedEventType(EventType newEt) {
+    _selectedEventType = newEt;
+    notifyListeners();
+  }
+
+  set currentEventData(dynamic newCED) {
+    _selectedEventType = newCED;
+    notifyListeners();
   }
 }

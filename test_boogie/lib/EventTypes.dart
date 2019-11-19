@@ -68,7 +68,7 @@ class EventTypeField {
     description = fieldData['description'] ?? name + ' field';
   }
 
-  Widget toQuestionWidget(Null Function(dynamic response) cb) {
+  Widget toQuestionWidget(Null Function(Map<String, String> response) cb) {
     Widget helper() {
       switch (fieldType) {
         case FieldType.string:
@@ -82,7 +82,7 @@ class EventTypeField {
           break;
         case FieldType.nounList:
           return NounListSelector(nounType, (val) {
-            cb({name: val});
+            cb({name: val.toString()});
           });
         default:
           return Text('Not yet implemented');
@@ -95,16 +95,18 @@ class EventTypeField {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
-            color: Colors.grey
+            color: Color.fromRGBO(225, 225, 225, 1)
           ),
           padding: EdgeInsets.all(10.0),
           child: Column(
-          children: <Widget>[Text(name), Text(description), helper()],
+          children: <Widget>[Text(capitalize(name)), Text(description), helper()],
         ),)
       ),
     );
   }
 }
+
+String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
 class EventType {
   dynamic data;

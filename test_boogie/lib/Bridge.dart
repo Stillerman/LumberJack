@@ -27,4 +27,8 @@ class Bridge {
   Future<http.Response> httpGet(String url) {
     return http.get(BASE + url, headers: getHeaders());
   }
+
+  Future<http.Response> delete(String url) {
+    return http.delete(BASE + url, headers: getHeaders());
+  }
 }

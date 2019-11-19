@@ -4,12 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/widgets.dart';
 import 'package:test_boogie/Bridge.dart';
-import 'package:test_boogie/Icons.dart';
-import 'package:test_boogie/Nouns.dart';
 
-import 'EventTypes.dart';
-import 'Store.dart';
-
+import '../lib/EventTypes.dart';
+import '../lib/Store.dart';
 
 class Logging extends StatefulWidget {
   final Bridge bridge;
@@ -29,14 +26,22 @@ class _LoggingState extends State<Logging> {
   Bridge bridge;
   Store store;
 
-  dynamic currentEventData = {};
+  Map<String, String> currentEventData = {};
 
   _LoggingState(this.store, this.bridge) {
-    store.addListener((){
+    store.addListener(listener);
+  }
+
+  void listener () {
       setState(() {
-        eventTypes = store.eventTypes;
+        eventTypes = store.eventTypes as List<EventType>;
       });
-    });
+    }
+
+
+  void dispose() {
+    super.dispose();
+    store.removeListener(listener);
   }
 
   List<Widget> iconButtons() {
@@ -52,9 +57,9 @@ class _LoggingState extends State<Logging> {
   List<Widget> getQuestionWidgets() {
     if (selectedEventType?.fields == null) return [];
     return selectedEventType.fields.map((field) {
-      return field.toQuestionWidget((dynamic response) {
+      return field.toQuestionWidget((Map<String, String> response) {
         setState(() {
-          currentEventData = <String, dynamic>{
+          currentEventData = <String, String>{
             ...currentEventData,
             ...response
           };
@@ -63,26 +68,45 @@ class _LoggingState extends State<Logging> {
     }).toList();
   }
 
+  void submitEvent () {
+    bridge.post('/userEvents/', {
+      'fields': json.encode(currentEventData),
+      'type': selectedEventType.pastTense
+      }).then((result) {
+      print('Result ${result.body.toString()}');
+      store.fetchUserEvents();
+    });
+  }
+
+  Widget submitWidget() {
+    return Padding(
+      padding: EdgeInsets.all(6.0),
+      child: Column(children: <Widget>[
+        Text(currentEventData.toString()),
+        FlatButton(child: Text('Submit'), onPressed: submitEvent,)
+        ]
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(
+        child: PageView(
+      scrollDirection: Axis.vertical,
       children: <Widget>[
-        Text(currentEventData.toString()),
-        Text(selectedEventType != null
-            ? selectedEventType.data['icon']
-            : 'null'),
         Padding(
           padding: EdgeInsets.all(25.0),
           child: Wrap(
             direction: Axis.horizontal,
             spacing: 15.0,
             runSpacing: 10.0,
-            alignment: WrapAlignment.spaceAround,
+            alignment: WrapAlignment.center,
             children: iconButtons(),
           ),
         ),
-        ...getQuestionWidgets()
+        ...getQuestionWidgets(),
+        submitWidget()
       ],
     ));
   }

@@ -1,14 +1,12 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:test_boogie/Bridge.dart';
 import 'package:test_boogie/main.dart';
 
-import 'Logger.dart';
+import 'NewLogger.dart';
 import 'Store.dart';
-import 'Timeline.dart';
+import 'NewTimeline.dart';
 
 class FlutterJack extends StatefulWidget {
   final String jWT;
@@ -32,12 +30,19 @@ class _FlutterJackState extends State<FlutterJack> {
     store = Store(bridge);
   }
 
-  @override
-  Widget build(BuildContext ctx) {
-    if (widget.appState == AppState.Logging) return Logging(store, bridge);
-    if (widget.appState == AppState.Browsing) return Timeline(store, bridge);
+  Widget meat() {
+    if (widget.appState == AppState.Logging) return Logger();
+    if (widget.appState == AppState.Browsing) return Timeline();
     else
       return Text('Something went wrong');
+  }
+
+  @override
+  Widget build(BuildContext ctx) {
+    return ChangeNotifierProvider<Store>(
+      builder: (_) => Store(bridge),
+      child: meat()
+    );
   }
 }
 
