@@ -1,4 +1,6 @@
 import mongoose, { Mongoose } from 'mongoose'
+const arrayUniquePlugin = require('mongoose-unique-array');
+
 const bcrypt = require('bcrypt-nodejs')
 const saltRounds = 10
 
@@ -31,14 +33,21 @@ const UserSchema = new Schema({
 	friends: [
 		{
 			type: Schema.Types.ObjectId,
-			red: 'User'
+			unique: true,
+			ref: 'User'
 		}
-	]
+	],
+	permissions: {
+		type: Map,
+		of: [String]
+	}
 })
 
 UserSchema.pre('save', function(next){
-	this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds))
+	if (this.isNew) this.password = bcrypt.hashSync(this.password, bcrypt.genSaltSync(saltRounds))
 	next()
 })
+
+UserSchema.plugin(arrayUniquePlugin)
 
 export var userModel = mongoose.model('User', UserSchema)

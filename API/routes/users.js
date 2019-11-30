@@ -1,9 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const userController = require('../app/api/controllers/users');
+import {create, authenticate, getProfile, addFriend} from '../app/api/controllers/users'
+import {validateUser} from '../auth'
 
 
-router.post('/register', userController.create);
-router.post('/login', userController.authenticate);
+router.post('/register', create)
+router.post('/login', authenticate)
 
-module.exports = router;
+router.get('/profile', validateUser, getProfile)
+
+router.post('/addFriend', validateUser, addFriend) // body : {friendId: blah blah blah}
+
+module.exports = router

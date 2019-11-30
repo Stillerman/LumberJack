@@ -6,9 +6,10 @@ import userEvents from './routes/userEvents'
 import nouns from './routes/nouns'
 import eventTypes from './routes/eventTypes'
 
+import {validateUser} from './auth'
+
 import { urlencoded } from 'body-parser'
 import { connection } from './config/database' //database configuration
-import { verify } from 'jsonwebtoken'
 import cors from 'cors'
 
 const app = express()
@@ -38,18 +39,6 @@ app.use('/eventTypes', validateUser, eventTypes)
 app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204)
 })
-
-function validateUser(req, res, next) {
-  verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
-    if (err) {
-      res.json({status:"error", message: err.message, data:null});
-    }else{
-      req.body.userId = decoded.id
-      next()
-    }
-  })
-  
-}
 
 
 // express doesn't consider not found 404 as an error so we need to handle 404 it explicitly
